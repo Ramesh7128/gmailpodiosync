@@ -46,6 +46,7 @@ def PrintAllGroups(gd_client, status=""):
   feed = gd_client.GetGroups()
   for entry in feed.entry:
     if entry.title.text == status:
+      print "this will be the text for status", entry.id.text
       return entry.id.text
     print 'Atom Id: %s' % entry.id.text
     print 'Group Name: %s' % entry.title.text
@@ -132,11 +133,13 @@ def create_podio_contacts():
                   if phone_no and status:
                     create_contact(client, name, primary_email, phone_no, status)
                   elif phone_no:
-                    create_contact(client, name, primary_email, phone_no)
+                    status = "Jaaga"
+                    create_contact(client, name, primary_email, phone_no,status)
                   elif status:
-                    create_contact(client, name, primary_email,status)
+                    create_contact(client, name, primary_email, status=status)
                   else:
-                    status="others"
+                    status="Jaaga"
+                    print name, primary_email, status
                     create_contact(client, name, primary_email,status)
                   name=""
                   primary_email=""
@@ -148,6 +151,7 @@ def create_podio_contacts():
 def create_contact(gd_client,name, primary_email, phone_no="",status=""):
   #name="Vaibhav"
   notes=""
+  print "Status for every contact :", status 
   #primary_email="ramesh7128@gmail.com"
   group_atom = PrintAllGroups(client,status)
   group_atom_id="http://www.google.com/m8/feeds/groups/rameshravi7128%40gmail.com/base/28c3264309fe5ed0"
@@ -167,7 +171,7 @@ def create_contact(gd_client,name, primary_email, phone_no="",status=""):
 
 
 def print_query_results(gd_client, url=""):
-  url="http://www.google.com/m8/feeds/groups/rameshravi7128%40gmail.com/base/2bbfed208aff6994"
+  #url="http://www.google.com/m8/feeds/groups/rameshravi7128%40gmail.com/base/2874f8d60969a56d"
   query = gdata.contacts.client.ContactsQuery()
   query.max_results = 200
   query.group = url
@@ -236,22 +240,19 @@ def podiocontacts():
                                       group_status.append(t)
                                                                                   
                 print "-----------------------------------------------------------------------------------"
-    group_status.append("others")
+    group_status.append("Jaaga")
 
 def delete_contacts_from_each_groups():
   for i in group_status:
     url = PrintAllGroups(client, i)
+    print "url : ", url
     print_query_results(client,url)
   
-    
-podiocontacts()
-#create_contact_group(client)
-#create_podio_contacts()
-#delete_groups_of_podio(client)
-#PrintAllGroups(client)
-#PrintAllContacts(client)
-#print_query_results(client) #deletes the contacts in the group individually
-#PrintAllGroups(client)
-delete_contacts_from_each_groups()
+if __name__ == "__main__"    
+  podiocontacts()
+  delete_contacts_from_each_groups()
+  delete_groups_of_podio(client)
+  create_contact_group(client)
+  create_podio_contacts()
 
 
